@@ -59,9 +59,9 @@ int main(int argc, char** argv)
 
   // We spin up a SingleThreadedExecutor for the current state monitor to get information
   // about the robot's state.
-  // rclcpp::executors::SingleThreadedExecutor executor;
-  // executor.add_node(move_group_node);
-  // std::thread([&executor]() { executor.spin(); }).detach();
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(move_group_node);
+  std::thread([&executor]() { executor.spin(); }).detach();
 
   // BEGIN_TUTORIAL
   //
@@ -71,7 +71,7 @@ int main(int argc, char** argv)
   // MoveIt operates on sets of joints called "planning groups" and stores them in an object called
   // the ``JointModelGroup``. Throughout MoveIt, the terms "planning group" and "joint model group"
   // are used interchangeably.
-  static const std::string PLANNING_GROUP = "panda_arm";
+  static const std::string PLANNING_GROUP = "ur_manipulator";
 
   // The
   // :moveit_codedir:`MoveGroupInterface<moveit_ros/planning_interface/move_group_interface/include/moveit/move_group_interface/move_group_interface.h>`
@@ -90,7 +90,7 @@ int main(int argc, char** argv)
   // Visualization
   // ^^^^^^^^^^^^^
   namespace rvt = rviz_visual_tools;
-  moveit_visual_tools::MoveItVisualTools visual_tools(move_group_node, "panda_link0", "move_group_tutorial",
+  moveit_visual_tools::MoveItVisualTools visual_tools(move_group_node, "base_link", "move_group_tutorial",
                                                       move_group.getRobotModel());
 
   visual_tools.deleteAllMarkers();
@@ -132,7 +132,7 @@ int main(int argc, char** argv)
   // We can plan a motion for this group to a desired pose for the
   // end-effector.
   geometry_msgs::msg::Pose target_pose1;
-  target_pose1.orientation.w = 1.0;
+  target_pose1.orientation.w = 0.0;
   target_pose1.position.x = 0.28;
   target_pose1.position.y = -0.2;
   target_pose1.position.z = 0.5;
@@ -213,8 +213,8 @@ int main(int argc, char** argv)
   // Let's specify a path constraint and a pose goal for our group.
   // First define the path constraint.
   moveit_msgs::msg::OrientationConstraint ocm;
-  ocm.link_name = "panda_link7";
-  ocm.header.frame_id = "panda_link0";
+  ocm.link_name = "wrist_3_joint";
+  ocm.header.frame_id = "base_link";
   ocm.orientation.w = 1.0;
   ocm.absolute_x_axis_tolerance = 0.1;
   ocm.absolute_y_axis_tolerance = 0.1;
@@ -440,9 +440,9 @@ int main(int argc, char** argv)
   // You could also use applyAttachedCollisionObject to attach an object to the robot directly.
   RCLCPP_INFO(LOGGER, "Attach the object to the robot");
   std::vector<std::string> touch_links;
-  touch_links.push_back("panda_rightfinger");
-  touch_links.push_back("panda_leftfinger");
-  move_group.attachObject(object_to_attach.id, "panda_hand", touch_links);
+  touch_links.push_back("rightfinger");
+  touch_links.push_back("leftfinger");
+  move_group.attachObject(object_to_attach.id, "manipulator_2_gripper", touch_links);
 
   visual_tools.publishText(text_pose, "Object_attached_to_robot", rvt::WHITE, rvt::XLARGE);
   visual_tools.trigger();

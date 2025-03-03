@@ -19,15 +19,19 @@ find_package(interactive_markers REQUIRED)
 find_package(rviz_visual_tools REQUIRED)
 find_package(moveit_visual_tools REQUIRED)
 find_package(geometric_shapes REQUIRED)
-#find_package(pcl_ros REQUIRED)
-#find_package(pcl_conversions REQUIRED)
-#find_package(rosbag REQUIRED)
+find_package(pcl_ros REQUIRED)
+find_package(pcl_conversions REQUIRED)
+find_package(rosbag2_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(tf2_ros REQUIRED)
 find_package(tf2_eigen REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
+find_package(geometry_msgs REQUIRED)
+find_package(rosbag2_storage_default_plugins REQUIRED)
+find_package(moveit_ros_occupancy_map_monitor REQUIRED)
+
 
 set(THIS_PACKAGE_INCLUDE_DIRS
   doc/interactivity/include
@@ -43,6 +47,7 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   rviz_visual_tools
   moveit_visual_tools
   moveit_ros_planning_interface
+  moveit_ros_occupancy_map_monitor
   interactive_markers
   tf2_geometry_msgs
   moveit_ros_planning
@@ -52,6 +57,11 @@ set(THIS_PACKAGE_INCLUDE_DEPENDS
   control_msgs
   moveit_servo
   moveit_task_constructor_core
+  pcl_ros
+  pcl_conversions
+  rosbag2_cpp
+  geometry_msgs
+  rosbag2_storage_default_plugins
 )
 
 include_directories(${THIS_PACKAGE_INCLUDE_DIRS})
@@ -65,7 +75,7 @@ add_subdirectory(doc/examples/motion_planning_api)
 # add_subdirectory(doc/examples/motion_planning_pipeline)
 add_subdirectory(doc/examples/move_group_interface)
 # add_subdirectory(doc/examples/move_group_python_interface)
-# add_subdirectory(doc/examples/perception_pipeline)
+add_subdirectory(doc/examples/perception_pipeline)
 # add_subdirectory(doc/examples/pick_place)
 # add_subdirectory(doc/examples/planning)
 add_subdirectory(doc/examples/planning_scene)
@@ -81,7 +91,6 @@ add_subdirectory(doc/examples/moveit_cpp)
 # add_subdirectory(doc/examples/visualizing_collisions)
 # add_subdirectory(doc/examples/bullet_collision_checker)
 add_subdirectory(doc/examples/realtime_servo)
-add_subdirectory(doc/how_to_guides/using_ompl_constrained_planning)
 
 ament_export_dependencies(
   ${THIS_PACKAGE_INCLUDE_DEPENDS}
