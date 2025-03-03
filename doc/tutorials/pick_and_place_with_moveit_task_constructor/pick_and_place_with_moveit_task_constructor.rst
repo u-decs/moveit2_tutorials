@@ -166,6 +166,7 @@ Open ``mtc_node.cpp`` in your editor of choice, and paste in the following code.
       geometry_msgs::msg::Pose pose;
       pose.position.x = 0.5;
       pose.position.y = -0.25;
+      pose.orientation.w = 1.0;
       object.pose = pose;
 
       moveit::planning_interface::PlanningSceneInterface psi;
@@ -232,8 +233,8 @@ Open ``mtc_node.cpp`` in your editor of choice, and paste in the following code.
       auto interpolation_planner = std::make_shared<mtc::solvers::JointInterpolationPlanner>();
 
       auto cartesian_planner = std::make_shared<mtc::solvers::CartesianPath>();
-      cartesian_planner->setMaxVelocityScaling(1.0);
-      cartesian_planner->setMaxAccelerationScaling(1.0);
+      cartesian_planner->setMaxVelocityScalingFactor(1.0);
+      cartesian_planner->setMaxAccelerationScalingFactor(1.0);
       cartesian_planner->setStepSize(.01);
 
       auto stage_open_hand =
@@ -513,7 +514,11 @@ Finally, we have ``main``: the following lines create a node using the class def
 5.1 Launch Files
 ^^^^^^^^^^^^^^^^
 
+<<<<<<< HEAD
 We will need a launch file to launch the ``move_group``, ``ros2_control``, ``static_tf``, ``robot_state_publisher``, and ``rviz`` nodes that provide us the environment to run the demo. The one we will use for this example can be found :codedir:`here<tutorials/pick_and_place_with_moveit_task_constructor/launch/mtc_demo.launch.py>`.
+=======
+We will need a launch file to launch ``move_group``, ``ros2_control``, ``static_tf``, ``robot_state_publisher``, and ``rviz``. :codedir:`Here <tutorials/pick_and_place_with_moveit_task_constructor/launch/mtc_demo.launch.py>` is the launch file we use in the tutorials package. Put this in the launch directory of your package.
+>>>>>>> 3e6576410e3322c86023ce9b35359fc73afc0de5
 
 To run the MoveIt Task Constructor node, we will use a second launch file to start the ``mtc_tutorial`` executable with the proper parameters. Here we can load URDF, SRDF, and OMPL parameters, or use MoveIt Configs Utils to do so. Your launch file should look something like the one found in this tutorial package :codedir:`here <tutorials/pick_and_place_with_moveit_task_constructor/launch/pick_place_demo.launch.py>` (pay close attention to the ``package`` and ``executable`` arguments below as they are different from the launch file linked) :
 
@@ -538,7 +543,15 @@ To run the MoveIt Task Constructor node, we will use a second launch file to sta
 
         return LaunchDescription([pick_place_demo])
 
+<<<<<<< HEAD
 Save a launch file as ``pick_place_demo.launch.py`` or download one to the package's launch directory. Make sure to edit the ``CMakeLists.txt`` so it includes the launch folder by adding the following lines: ::
+=======
+Save this file as ``pick_place_demo.launch.py`` in your package's launch directory. Make sure to add the following line to your ``CMakeLists.txt`` so that the launch files are properly installed. ::
+
+   install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+
+Now build and source your colcon workspace. ::
+>>>>>>> 3e6576410e3322c86023ce9b35359fc73afc0de5
 
     install(DIRECTORY launch
       DESTINATION share/${PROJECT_NAME}
@@ -806,10 +819,22 @@ The next stages will be added to the serial container rather than the task.
         place->properties().configureInitFrom(mtc::Stage::PARENT,
                                               { "eef", "group", "ik_frame" });
 
+<<<<<<< HEAD
 This next stage generates the poses used to place the object and compute the inverse kinematics for those poses - it is somewhat similar to the ``generate grasp pose`` stage from the pick serial container. We start by creating a stage to generate the poses and inheriting the task properties. We specify the pose where we want to place the object with a ``PoseStamped`` message from ``geometry_msgs`` - in this case, we choose ``y = 0.5``. We then pass the target pose to the stage with ``setPose``.
 Next, we use ``setMonitoredStage`` and pass it the pointer to the ``attach_object`` stage from earlier.
 This allows the stage to know how the object is attached.
 We then create a ``ComputeIK`` stage and pass it our ``GeneratePlacePose`` stage - the rest follows the same logic as above with the pick stages.
+=======
+
+This next stage generates the poses used to place the object and compute the inverse kinematics for those poses - it is somewhat similar to the ``generate grasp pose`` stage from the pick serial container.
+We start by creating a stage to generate the poses and inheriting the task properties.
+We specify the pose where we want to place the object with a ``PoseStamped`` message from ``geometry_msgs`` - in this case, we choose ``y = 0.5`` in the ``"object"`` frame.
+We then pass the target pose to the stage with ``setPose``.
+Next, we use ``setMonitoredStage`` and pass it the pointer to the ``attach_object`` stage from earlier.
+This allows the stage to know how the object is attached.
+We then create a ``ComputeIK`` stage and pass it our ``GeneratePlacePose`` stage - the rest follows the same logic as above with the pick stages.
+
+>>>>>>> 3e6576410e3322c86023ce9b35359fc73afc0de5
 
 .. code-block:: c++
 
@@ -823,6 +848,7 @@ We then create a ``ComputeIK`` stage and pass it our ``GeneratePlacePose`` stage
           geometry_msgs::msg::PoseStamped target_pose_msg;
           target_pose_msg.header.frame_id = "object";
           target_pose_msg.pose.position.y = 0.5;
+          target_pose_msg.pose.orientation.w = 1.0;
           stage->setPose(target_pose_msg);
           stage->setMonitoredStage(attach_object_stage);  // Hook into attach_object_stage
 
@@ -831,7 +857,7 @@ We then create a ``ComputeIK`` stage and pass it our ``GeneratePlacePose`` stage
               std::make_unique<mtc::stages::ComputeIK>("place pose IK", std::move(stage));
           wrapper->setMaxIKSolutions(2);
           wrapper->setMinSolutionDistance(1.0);
-          wrapper->setIKFrame(hand_frame);
+          wrapper->setIKFrame("object");
           wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
           wrapper->properties().configureInitFrom(mtc::Stage::INTERFACE, { "target_pose" });
           place->insert(std::move(wrapper));

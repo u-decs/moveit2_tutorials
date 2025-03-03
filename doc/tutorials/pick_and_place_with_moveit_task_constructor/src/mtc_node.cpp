@@ -58,6 +58,7 @@ void MTCTaskNode::setupPlanningScene()
   geometry_msgs::msg::Pose pose;
   pose.position.x = 0.5;
   pose.position.y = -0.25;
+  pose.orientation.w = 1.0;
   object.pose = pose;
 
   moveit::planning_interface::PlanningSceneInterface psi;
@@ -121,7 +122,11 @@ mtc::Task MTCTaskNode::createTask()
   auto cartesian_planner = std::make_shared<mtc::solvers::CartesianPath>();
   cartesian_planner->setMaxVelocityScalingFactor(1.0);
   cartesian_planner->setMaxAccelerationScalingFactor(1.0);
+<<<<<<< HEAD
   cartesian_planner->setStepSize(.001);
+=======
+  cartesian_planner->setStepSize(.01);
+>>>>>>> 3e6576410e3322c86023ce9b35359fc73afc0de5
 
   // clang-format off
   auto stage_open_hand =
@@ -287,6 +292,7 @@ mtc::Task MTCTaskNode::createTask()
       geometry_msgs::msg::PoseStamped target_pose_msg;
       target_pose_msg.header.frame_id = "object";
       target_pose_msg.pose.position.y = 0.5;
+      target_pose_msg.pose.orientation.w = 1.0;
       stage->setPose(target_pose_msg);
       stage->setMonitoredStage(attach_object_stage);  // Hook into attach_object_stage
 
@@ -297,7 +303,7 @@ mtc::Task MTCTaskNode::createTask()
       // clang-format on
       wrapper->setMaxIKSolutions(2);
       wrapper->setMinSolutionDistance(1.0);
-      wrapper->setIKFrame(hand_frame);
+      wrapper->setIKFrame("object");
       wrapper->properties().configureInitFrom(mtc::Stage::PARENT, { "eef", "group" });
       wrapper->properties().configureInitFrom(mtc::Stage::INTERFACE, { "target_pose" });
       place->insert(std::move(wrapper));
