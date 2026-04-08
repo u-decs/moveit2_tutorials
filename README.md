@@ -1,3 +1,24 @@
+Original install instruction: https://moveit.picknik.ai/humble/doc/tutorials/getting_started/getting_started.html
+
+mkdir -p ~/ws_moveit2/src
+cd ~/ws_moveit2/src
+git clone --branch humble https://github.com/u-decs/moveit2_tutorials
+vcs import < moveit2_tutorials/moveit2_tutorials.repos
+sudo apt update && rosdep install -r --from-paths . --ignore-src --rosdistro $ROS_DISTRO -y
+cd ~/ws_moveit2
+colcon build --mixin release
+
+
+
+
+
+
+
+
+
+
+
+
 # MoveIt 2 Tutorials
 
 This is the primary documentation for the MoveIt project.
