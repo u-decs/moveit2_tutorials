@@ -5,15 +5,15 @@ repositories:
     version: main
   moveit2:
     type: git
-    url: https://github.com/ros-planning/moveit2
+    url: https://github.com/u-decs/moveit2
     version: humble
   moveit_resources:
     type: git
-    url: https://github.com/ros-planning/moveit_resources
+    url: https://github.com/u-decs/moveit_resources
     version: humble
   moveit_task_constructor:
     type: git
-    url: https://github.com/ros-planning/moveit_task_constructor.git
+    url: https://github.com/u-decs/moveit_task_constructor.git
     version: humble
   moveit_visual_tools:
     type: git
